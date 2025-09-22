@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div style="text-align: right; margin-bottom: 1rem;">
+      <router-link to="/create">
+        <button>Create New Hero</button>
+      </router-link>
+    </div>
     <SuperheroCard
         v-for="hero in heroes"
         :key="hero.id"
@@ -7,7 +12,7 @@
     />
     <Pagination
         :currentPage="page"
-        :totalPages="totalPages"
+        :totalPages="totalPage"
         @page-changed="onPageChanged"
     />
 
@@ -24,17 +29,17 @@ export default {
   components: { SuperheroCard, Pagination },
   setup() {
     const heroes = ref([]);
-    const total = ref(0);
     const page = ref(1);
-    const limit = 5;
 
+    const totalPage = ref(1);
     const loadHeroes = async () => {
-      const res = await getHeroes(page.value, limit);
-      heroes.value = res.data;
-      total.value = res.total;
-    };
+      const limit = 5
+      const response = await getHeroes(page.value, limit)
 
-    const totalPages = computed(() => Math.ceil(total.value / limit));
+      heroes.value = response.data
+      totalPage.value = Math.ceil(response.total / limit)
+    }
+
 
     onMounted(loadHeroes);
 
@@ -43,7 +48,7 @@ export default {
       loadHeroes();
     };
 
-    return { heroes, page, onPageChanged };
+    return { heroes, page, onPageChanged, totalPage };
   },
 };
 </script>

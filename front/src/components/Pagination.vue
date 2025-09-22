@@ -26,7 +26,6 @@ defineProps({
   },
   totalPages: {
     type: Number,
-    default: 10 
   }
 });
 </script>

@@ -8,11 +8,11 @@ const {
     updateSuperhero,
     deleteSuperhero
 } = require('../controllers/superheroController');
-
+const validateSuperhero = require('../../middlewares/validateSuperhero');
 router.get('/', getAllSuperheroes);
 router.get('/:id', getSuperheroById);
-router.post('/', createSuperhero);
-router.put('/:id', updateSuperhero);
+router.post('/',validateSuperhero, createSuperhero);
+router.put('/:id',validateSuperhero, updateSuperhero);
 router.delete('/:id', deleteSuperhero);
 
 module.exports = router;
