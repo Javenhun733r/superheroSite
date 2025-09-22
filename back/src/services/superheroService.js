@@ -1,6 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { formatHero, formatHeroes } = require('../../dto/superhero.dto');
+
+const { formatHero, formatHeroes } = require('../../dto/superheroOutput.dto');
+const { mapCreateHeroDto, mapUpdateHeroDto } = require('../../dto/superheroInput.dto');
 
 async function getAllSuperheroes(page = 1, limit = 5) {
     const offset = (page - 1) * limit;
@@ -19,7 +21,8 @@ async function getAllSuperheroes(page = 1, limit = 5) {
     return { data: formatHeroes(superheroes), total };
 }
 
-async function createSuperhero(heroData) {
+async function createSuperhero(rawData) {
+    const heroData = mapCreateHeroDto(rawData);
     const { imageUrls = [], ...rest } = heroData;
 
     const newHero = await prisma.superhero.create({
@@ -41,12 +44,11 @@ async function getSuperheroById(id) {
         include: { images: true }
     });
 
-    if (!hero) return null;
-
-    return formatHero(hero);
+    return hero ? formatHero(hero) : null;
 }
 
-async function updateSuperhero(id, updateData) {
+async function updateSuperhero(id, rawData) {
+    const updateData = mapUpdateHeroDto(rawData);
     const { imageUrls = [], ...rest } = updateData;
 
     const existingHero = await prisma.superhero.findUnique({
