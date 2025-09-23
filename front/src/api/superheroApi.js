@@ -13,7 +13,9 @@ export async function getHeroById(id) {
 }
 
 export async function createHero(data) {
-    const resp = await axios.post(API_BASE, data);
+    const resp = await axios.post(API_BASE, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
     return resp.data;
 }
 

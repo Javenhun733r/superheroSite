@@ -1,7 +1,5 @@
 
 class SuperheroInputDto {
-    /** @type {object} */
-
     /** @type {string} */
     nickname
     /** @type {string} */
