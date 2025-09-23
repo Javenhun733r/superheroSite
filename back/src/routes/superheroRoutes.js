@@ -1,19 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { uploadSingle, uploadMultiple } = require('../middlewares/uploadMiddleware');
-const {
-    getAllSuperheroes,
-    createSuperhero,
-    getSuperheroById,
-    updateSuperhero,
-    deleteSuperhero
-} = require('../controllers/superheroController');
-const validateSuperhero = require('../middlewares/validateSuperhero');
+const { uploadMultiple } = require('../middlewares/uploadMiddleware');
+const superheroController = require('../controllers/superheroController');
+const checkUuid = require("../middlewares/uuidChecker");
 
-router.get('/', getAllSuperheroes);
-router.get('/:id', getSuperheroById);
-router.post('/',uploadMultiple('images', 5),  createSuperhero);
-router.put('/:id', uploadMultiple('images', 5),  updateSuperhero);
-router.delete('/:id', deleteSuperhero);
+router.get('/', superheroController.getAllSuperheroes);
+router.get('/:id', checkUuid, superheroController.getSuperheroById);
+router.post('/', uploadMultiple('images', 5), superheroController.createSuperhero);
+router.put('/:id', checkUuid,  uploadMultiple('images', 5), superheroController.updateSuperhero);
+router.delete('/:id', checkUuid,  superheroController.deleteSuperhero);
 
 module.exports = router;

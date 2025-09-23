@@ -1,91 +1,51 @@
 const superheroService = require('../services/superheroService');
-const {toSuperheroInputDto} = require('../mappers/superheroInput.mapper');
+const { toSuperheroInputDto } = require('../mappers/superheroInput.mapper');
+const asyncHandler = require('../utils/asyncHandler');
 
-const getAllSuperheroes = async (req, res) => {
-    try {
+class SuperheroController {
+    constructor(service) {
+        this.service = service;
+        this.getAllSuperheroes = asyncHandler(this.getAllSuperheroes.bind(this));
+        this.createSuperhero = asyncHandler(this.createSuperhero.bind(this));
+        this.getSuperheroById = asyncHandler(this.getSuperheroById.bind(this));
+        this.updateSuperhero = asyncHandler(this.updateSuperhero.bind(this));
+        this.deleteSuperhero = asyncHandler(this.deleteSuperhero.bind(this));
+    }
+
+    async getAllSuperheroes(req, res) {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 5;
-        const result = await superheroService.getAllSuperheroes(page, limit);
+        const result = await this.service.getAllSuperheroes(page, limit);
         res.json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: 'Failed to fetch superheroes'});
     }
-};
 
-const createSuperhero = async (req, res) => {
-    try {
+    async createSuperhero(req, res) {
         const heroDto = toSuperheroInputDto(req.body);
-
-        heroDto.imageUrls = req.files.map(file => `${process.env.BACKEND_ADDRESS}/uploads/${file.filename}`);
-        const hero = await superheroService.createSuperhero(heroDto);
+        heroDto.imageUrls = (req.files || []).map(f => `${process.env.BACKEND_ADDRESS}/uploads/${f.filename}`);
+        const hero = await this.service.createSuperhero(heroDto);
         res.status(201).json(hero);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: 'Failed to create superhero'});
     }
-};
 
-
-const getSuperheroById = async (req, res) => {
-    try {
-        const hero = await superheroService.getSuperheroById(req.params.id);
-        if (!hero) return res.status(404).json({error: 'Superhero not found'});
+    async getSuperheroById(req, res) {
+        const hero = await this.service.getSuperheroById(req.params.id);
         res.json(hero);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: 'Failed to get superhero'});
     }
-};
 
-const updateSuperhero = async (req, res) => {
-    try {
+    async updateSuperhero(req, res) {
         const heroDto = toSuperheroInputDto(req.body);
-
-        const oldImages = (() => {
-            const {oldImages} = req.body;
-            if (!oldImages) return [];
-            if (Array.isArray(oldImages)) return oldImages;
-            try {
-                return JSON.parse(oldImages);
-            } catch {
-                return [];
-            }
-        })();
-
-        const newImages = (req.files || []).map(
-            file => `${process.env.BACKEND_ADDRESS}/uploads/${file.filename}`
-        );
-
+        const oldImages = req.body.oldImages
+            ? (Array.isArray(req.body.oldImages) ? req.body.oldImages : JSON.parse(req.body.oldImages))
+            : [];
+        const newImages = (req.files || []).map(f => `${process.env.BACKEND_ADDRESS}/uploads/${f.filename}`);
         heroDto.imageUrls = [...oldImages, ...newImages];
-
-        const hero = await superheroService.updateSuperhero(req.params.id, heroDto);
-        if (!hero) {
-            return res.status(404).json({error: 'Superhero not found'});
-        }
-
+        const hero = await this.service.updateSuperhero(req.params.id, heroDto);
         res.json(hero);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: 'Failed to update superhero'});
     }
-};
 
-
-const deleteSuperhero = async (req, res) => {
-    try {
-        await superheroService.deleteSuperhero(req.params.id);
+    async deleteSuperhero(req, res) {
+        await this.service.deleteSuperhero(req.params.id);
         res.status(204).send();
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: 'Failed to delete superhero'});
     }
-};
+}
 
-module.exports = {
-    getAllSuperheroes,
-    createSuperhero,
-    getSuperheroById,
-    updateSuperhero,
-    deleteSuperhero
-};
+module.exports = new SuperheroController(superheroService);

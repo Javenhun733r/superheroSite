@@ -1,41 +1,41 @@
-const repository = require('../repo/superhero.repository');
+const superheroRepository = require('../repo/superhero.repository');
 const { SuperheroInputDto } = require('../dto/superheroInput.dto');
 
-async function getAllSuperheroes(page = 1, limit = 5) {
-    const offset = (page - 1) * limit;
-    const [heroes, total] = await Promise.all([
-        repository.findAll(offset, limit),
-        repository.countAll()
-    ]);
-    return { data: heroes, total }; // heroes вже у форматі Output DTO
-}
-
-async function createSuperhero(inputData) {
-    if (!(inputData instanceof SuperheroInputDto)) {
-        throw new Error('Data must be SuperheroInputDto');
+class SuperheroService {
+    constructor(repository) {
+        this.repository = repository;
     }
-    return repository.create(inputData);
-}
 
-async function getSuperheroById(id) {
-    return repository.findById(id);
-}
-
-async function updateSuperhero(id, inputData) {
-    if (!(inputData instanceof SuperheroInputDto)) {
-        throw new Error('Data must be SuperheroInputDto');
+    async getAllSuperheroes(page = 1, limit = 5) {
+        const offset = (page - 1) * limit;
+        const [heroes, total] = await Promise.all([
+            this.repository.findAll(offset, limit),
+            this.repository.countAll()
+        ]);
+        return { data: heroes, total };
     }
-    return repository.update(id, inputData);
-}
 
-async function deleteSuperhero(id) {
-    return repository.deleteById(id);
-}
+    async createSuperhero(inputData) {
+        if (!(inputData instanceof SuperheroInputDto)) {
+            throw new Error('Data must be SuperheroInputDto');
+        }
+        return this.repository.create(inputData);
+    }
 
-module.exports = {
-    getAllSuperheroes,
-    createSuperhero,
-    getSuperheroById,
-    updateSuperhero,
-    deleteSuperhero
-};
+    async getSuperheroById(id) {
+        return this.repository.findById(id);
+    }
+
+    async updateSuperhero(id, inputData) {
+        if (!(inputData instanceof SuperheroInputDto)) {
+            throw new Error('Data must be SuperheroInputDto');
+        }
+        return this.repository.update(id, inputData);
+    }
+
+    async deleteSuperhero(id) {
+        return this.repository.deleteById(id);
+    }
+}
+const superheroService = new SuperheroService(superheroRepository)
+module.exports = superheroService;
