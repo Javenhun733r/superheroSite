@@ -1,84 +1,35 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-
-const { formatHero, formatHeroes } = require('../../dto/superheroOutput.dto');
-const { mapCreateHeroDto, mapUpdateHeroDto } = require('../../dto/superheroInput.dto');
+const repository = require('../repo/superhero.repository');
+const { SuperheroInputDto } = require('../dto/superheroInput.dto');
 
 async function getAllSuperheroes(page = 1, limit = 5) {
     const offset = (page - 1) * limit;
-
-    const [superheroes, total] = await Promise.all([
-        prisma.superhero.findMany({
-            skip: offset,
-            take: limit,
-            include: {
-                images: { take: 1 }
-            }
-        }),
-        prisma.superhero.count()
+    const [heroes, total] = await Promise.all([
+        repository.findAll(offset, limit),
+        repository.countAll()
     ]);
-
-    return { data: formatHeroes(superheroes), total };
+    return { data: heroes, total }; // heroes вже у форматі Output DTO
 }
 
-async function createSuperhero(rawData) {
-    const heroData = mapCreateHeroDto(rawData);
-    const { imageUrls = [], ...rest } = heroData;
-
-    const newHero = await prisma.superhero.create({
-        data: {
-            ...rest,
-            images: {
-                create: imageUrls.map((url) => ({ url }))
-            }
-        },
-        include: { images: true }
-    });
-
-    return formatHero(newHero);
+async function createSuperhero(inputData) {
+    if (!(inputData instanceof SuperheroInputDto)) {
+        throw new Error('Data must be SuperheroInputDto');
+    }
+    return repository.create(inputData);
 }
 
 async function getSuperheroById(id) {
-    const hero = await prisma.superhero.findUnique({
-        where: { id },
-        include: { images: true }
-    });
-
-    return hero ? formatHero(hero) : null;
+    return repository.findById(id);
 }
 
-async function updateSuperhero(id, rawData) {
-    const updateData = mapUpdateHeroDto(rawData);
-    const { imageUrls = [], ...rest } = updateData;
-
-    const existingHero = await prisma.superhero.findUnique({
-        where: { id },
-        include: { images: true }
-    });
-
-    if (!existingHero) return null;
-
-    await prisma.image.deleteMany({
-        where: { superheroId: id }
-    });
-
-    const updatedHero = await prisma.superhero.update({
-        where: { id },
-        data: {
-            ...rest,
-            images: {
-                create: imageUrls.map((url) => ({ url }))
-            }
-        },
-        include: { images: true }
-    });
-
-    return formatHero(updatedHero);
+async function updateSuperhero(id, inputData) {
+    if (!(inputData instanceof SuperheroInputDto)) {
+        throw new Error('Data must be SuperheroInputDto');
+    }
+    return repository.update(id, inputData);
 }
 
 async function deleteSuperhero(id) {
-    await prisma.image.deleteMany({ where: { superheroId: id } });
-    await prisma.superhero.delete({ where: { id } });
+    return repository.deleteById(id);
 }
 
 module.exports = {

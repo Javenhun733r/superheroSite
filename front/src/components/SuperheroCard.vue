@@ -16,6 +16,7 @@ defineProps({
 <style scoped>
 .card {
   border: 1px solid #ccc;
+  border-radius: 10px;
   padding: 1rem;
   margin-bottom: 1rem;
   cursor: pointer;

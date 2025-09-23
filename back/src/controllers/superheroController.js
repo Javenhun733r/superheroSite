@@ -1,4 +1,5 @@
 const superheroService = require('../services/superheroService');
+const { toSuperheroInputDto } = require('../mappers/superheroInput.mapper');
 
 const getAllSuperheroes = async (req, res) => {
     try {
@@ -14,7 +15,8 @@ const getAllSuperheroes = async (req, res) => {
 
 const createSuperhero = async (req, res) => {
     try {
-        const hero = await superheroService.createSuperhero(req.body);
+        const heroDto = toSuperheroInputDto(req.body);
+        const hero = await superheroService.createSuperhero(heroDto);
         res.status(201).json(hero);
     } catch (error) {
         console.error(error);
@@ -35,7 +37,8 @@ const getSuperheroById = async (req, res) => {
 
 const updateSuperhero = async (req, res) => {
     try {
-        const hero = await superheroService.updateSuperhero(req.params.id, req.body);
+        const heroDto = toSuperheroInputDto(req.body); // <-- перетворюємо в DTO
+        const hero = await superheroService.updateSuperhero(req.params.id, heroDto);
         if (!hero) return res.status(404).json({ error: 'Superhero not found' });
         res.json(hero);
     } catch (error) {
