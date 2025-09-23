@@ -24,24 +24,59 @@ const onPageChanged = (newPage) => {
 }
 </script>
 <template>
-  <div>
-    <div style="text-align: right; margin-bottom: 1rem;">
+  <div class="hero-list-container">
+    <div class="header-actions">
       <router-link to="/create">
-        <button>Create New Hero</button>
+        <button class="create-btn">Create New Hero</button>
       </router-link>
     </div>
-    <SuperheroCard
-        v-for="hero in heroes"
-        :key="hero.id"
-        :hero="hero"
-    />
+    <div class="cards-grid">
+      <SuperheroCard
+          v-for="hero in heroes"
+          :key="hero.id"
+          :hero="hero"
+      />
+    </div>
     <Pagination
         :currentPage="page"
         :totalPages="totalPage"
         @page-changed="onPageChanged"
     />
-
   </div>
 </template>
 
+<style scoped>
+.hero-list-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.header-actions {
+  text-align: right;
+  margin-bottom: 2rem;
+}
+
+.create-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background-color: #2ecc71;
+  color: white;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.create-btn:hover {
+  background-color: #27ae60;
+  transform: scale(1.05);
+}
+
+.cards-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+</style>
 

@@ -1,3 +1,15 @@
+<script setup>
+defineProps({
+  currentPage: {
+    type: Number,
+    required: true
+  },
+  totalPages: {
+    type: Number,
+  }
+});
+</script>
+
 <template>
   <div class="pagination">
     <button
@@ -18,17 +30,6 @@
   </div>
 </template>
 
-<script setup>
-defineProps({
-  currentPage: {
-    type: Number,
-    required: true
-  },
-  totalPages: {
-    type: Number,
-  }
-});
-</script>
 
 <style scoped>
 .pagination {
@@ -36,17 +37,32 @@ defineProps({
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  font-size: 14px;
+.pagination button {
+  padding: 0.6rem 1.2rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #555;
+  background-color: #ecf0f1;
+  border: none;
+  border-radius: 50px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
-
-button[disabled] {
+.pagination button:hover:not([disabled]) {
+  background-color: #bdc3c7;
+  transform: scale(1.05);
+}
+.pagination button[disabled] {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.4;
+  background-color: #f4f7f6;
+}
+.pagination span {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 500;
 }
 </style>

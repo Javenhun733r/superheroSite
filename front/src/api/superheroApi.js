@@ -1,30 +1,16 @@
-import axios from 'axios';
+import axiosClient from './axiosClient';
 
-const API_BASE = 'http://localhost:5231';
+export const getHeroes = (page = 1, limit = 5) =>
+    axiosClient.get('/', { params: { page, limit } }).then(res => res.data);
 
-export async function getHeroes(page = 1, limit = 5) {
-    const resp = await axios.get(API_BASE, { params: { page, limit } });
-    return resp.data;
-}
+export const getHeroById = (id) =>
+    axiosClient.get(`/${id}`).then(res => res.data);
 
-export async function getHeroById(id) {
-    const resp = await axios.get(`${API_BASE}/${id}`);
-    return resp.data;
-}
+export const createHero = (formData) =>
+    axiosClient.post('/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => res.data);
 
-export async function createHero(data) {
-    const resp = await axios.post(API_BASE, data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    return resp.data;
-}
+export const updateHero = (id, formData) =>
+    axiosClient.put(`/${id}`, formData).then(res => res.data);
 
-export async function updateHero(id, data) {
-    const resp = await axios.put(`${API_BASE}/${id}`, data);
-    return resp.data;
-}
-
-export async function deleteHero(id) {
-    const resp = await axios.delete(`${API_BASE}/${id}`);
-    return resp.data;
-}
+export const deleteHero = (id) =>
+    axiosClient.delete(`/${id}`).then(res => res.data);
