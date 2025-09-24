@@ -20,6 +20,7 @@ class SuperheroOutputDto {
     /** @type {{id: string, url: string}[]} */
     images;
 }
-module.exports ={
+
+export {
     SuperheroOutputDto
 };

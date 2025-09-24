@@ -1,7 +1,6 @@
-const superheroRepository = require('../repo/superhero.repository');
-const { SuperheroInputDto } = require('../dto/superheroInput.dto');
+import { SuperheroInputDto } from '../dto/superheroInput.dto.js';
 
-class SuperheroService {
+export default class SuperheroService {
     constructor(repository) {
         this.repository = repository;
     }
@@ -37,5 +36,5 @@ class SuperheroService {
         return this.repository.deleteById(id);
     }
 }
-const superheroService = new SuperheroService(superheroRepository)
-module.exports = superheroService;
+
+

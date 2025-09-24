@@ -1,4 +1,5 @@
-const prisma = require("../src/db/prisma")
+import prisma from "../src/db/prisma.js";
+
 const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 const AWS_REGION = process.env.AWS_REGION;
 const heroes = [

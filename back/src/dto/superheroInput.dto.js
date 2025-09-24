@@ -1,18 +1,16 @@
-
 class SuperheroInputDto {
     /** @type {string} */
-    nickname
+    nickname;
     /** @type {string} */
-    realName
+    realName;
     /** @type {string} */
-    originDescription
+    originDescription;
     /** @type {string[]|string} */
-    superpowers
+    superpowers;
     /** @type {string} */
-    catchPhrase
+    catchPhrase;
     /** @type {string[]} */
-    imageUrls
+    imageUrls;
 }
-module.exports ={
-    SuperheroInputDto
-};
+
+export {SuperheroInputDto};

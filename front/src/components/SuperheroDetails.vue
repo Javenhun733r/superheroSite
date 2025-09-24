@@ -118,8 +118,6 @@ onMounted(loadHero)
 </template>
 
 <style scoped>
-
-
 .hero-page-wrapper {
   color:  #e0e0e0;
   font-family: 'Poppins', sans-serif;
@@ -340,7 +338,7 @@ onMounted(loadHero)
   background: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   font-size: 2rem;
   cursor: pointer;
   z-index: 1001;

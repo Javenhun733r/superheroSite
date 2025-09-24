@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const { ValidationError } = require('../errors/CustomErrors');
+import Joi from 'joi';
+import { ValidationError } from '../errors/CustomErrors.js';
 
 const superheroSchema = Joi.object({
     nickname: Joi.string().required(),
@@ -13,7 +13,7 @@ const superheroSchema = Joi.object({
     imageUrls: Joi.array().items(Joi.string().uri())
 });
 
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
     const { error } = superheroSchema.validate(req.body, { abortEarly: false });
     if (error) {
         const messages = error.details.map(d => d.message);

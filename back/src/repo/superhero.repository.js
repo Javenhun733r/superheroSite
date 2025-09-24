@@ -1,8 +1,8 @@
-const prisma = require("../db/prisma");
-const { toSuperheroOutputDto, toSuperheroOutputDtoArray } = require('../mappers/superheroOutput.mapper');
-const { NotFoundError, AppError } = require('../errors/CustomErrors');
-class SuperheroRepository {
+import prisma from '../db/prisma.js';
+import { toSuperheroOutputDto, toSuperheroOutputDtoArray } from '../mappers/superheroOutput.mapper.js';
+import { NotFoundError, AppError } from '../errors/CustomErrors.js';
 
+class SuperheroRepository {
     findAll(offset, limit) {
         return prisma.superhero.findMany({
             skip: offset,
@@ -79,4 +79,4 @@ class SuperheroRepository {
     }
 }
 
-module.exports = new SuperheroRepository ();
+export default SuperheroRepository;

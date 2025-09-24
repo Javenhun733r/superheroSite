@@ -9,7 +9,6 @@ class AppError extends Error {
     }
 }
 
-
 class NotFoundError extends AppError {
     constructor(message) {
         super(message, 404);
@@ -28,4 +27,5 @@ class ValidationError extends AppError {
         this.name = 'ValidationError';
     }
 }
-module.exports = { AppError, NotFoundError, BadRequestError, ValidationError };
+
+export { AppError, NotFoundError, BadRequestError, ValidationError };

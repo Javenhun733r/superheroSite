@@ -1,5 +1,5 @@
-const { validate: isUuid } = require('uuid');
-const {BadRequestError} = require("../errors/customErrors");
+import { validate as isUuid } from 'uuid';
+import { BadRequestError } from '../errors/CustomErrors.js';
 
 function checkUuid(req, res, next) {
     const { id } = req.params;
@@ -9,4 +9,4 @@ function checkUuid(req, res, next) {
     next();
 }
 
-module.exports = checkUuid;
+export default checkUuid;

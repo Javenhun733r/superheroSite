@@ -1,4 +1,3 @@
-
 function errorHandler(err, req, res, next) {
     console.error(`${err.name || 'Error'}:`, err);
 
@@ -11,4 +10,5 @@ function errorHandler(err, req, res, next) {
         type
     });
 }
-module.exports = errorHandler;
+
+export default errorHandler;

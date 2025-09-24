@@ -1,5 +1,4 @@
-
-const { SuperheroOutputDto } = require('../dto/superheroOutput.dto');
+import { SuperheroOutputDto } from '../dto/superheroOutput.dto.js';
 
 function toSuperheroOutputDto(hero) {
     const dto = new SuperheroOutputDto();
@@ -19,8 +18,5 @@ function toSuperheroOutputDto(hero) {
 function toSuperheroOutputDtoArray(heroes) {
     return heroes.map(toSuperheroOutputDto);
 }
-module.exports = {
-    toSuperheroOutputDto,
-    toSuperheroOutputDtoArray
-}
 
+export { toSuperheroOutputDto, toSuperheroOutputDtoArray };

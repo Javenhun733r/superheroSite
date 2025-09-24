@@ -1,6 +1,6 @@
-const { PutObjectCommand } = require("@aws-sdk/client-s3");
-const s3 = require('../config/s3');
-const path = require('path');
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import s3 from '../config/s3.js';
+import path from 'path';
 
 async function uploadToS3(file) {
     const ext = path.extname(file.originalname);
@@ -19,4 +19,4 @@ async function uploadToS3(file) {
     return publicUrl;
 }
 
-module.exports = { uploadToS3 };
+export { uploadToS3 };

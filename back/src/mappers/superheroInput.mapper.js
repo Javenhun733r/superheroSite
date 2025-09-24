@@ -1,4 +1,4 @@
-const { SuperheroInputDto } = require('../dto/superheroInput.dto');
+import { SuperheroInputDto } from '../dto/superheroInput.dto.js';
 
 function toSuperheroInputDto(body) {
     const dto = new SuperheroInputDto();
@@ -12,6 +12,5 @@ function toSuperheroInputDto(body) {
     dto.imageUrls = body.imageUrls || [];
     return dto;
 }
-module.exports = {
-    toSuperheroInputDto
-}
+
+export { toSuperheroInputDto };

@@ -1,8 +1,7 @@
-const superheroService = require('../services/superheroService');
-const { toSuperheroInputDto } = require('../mappers/superheroInput.mapper');
-const { uploadToS3 } = require('../services/s3Service');
+import { toSuperheroInputDto } from '../mappers/superheroInput.mapper.js';
+import { uploadToS3 } from '../services/s3Service.js';
 
-class SuperheroController {
+export default class SuperheroController {
     constructor(service) {
         this.service = service;
     }
@@ -60,4 +59,3 @@ class SuperheroController {
     }
 }
 
-module.exports = new SuperheroController(superheroService);
