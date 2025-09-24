@@ -1,4 +1,6 @@
 const prisma = require("../src/db/prisma")
+const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
+const AWS_REGION = process.env.AWS_REGION;
 const heroes = [
     {
         nickname: "ShadowStrike",
@@ -7,9 +9,9 @@ const heroes = [
         superpowers: ["Shadow manipulation", "Invisibility", "Teleportation"],
         catchPhrase: "You can't fight what you can't see!",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/shadow_strike1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/shadow_strike2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/shadow_strike3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/shadow_strike1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/shadow_strike2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/shadow_strike3.jpg` }
         ]
     },
     {
@@ -19,9 +21,9 @@ const heroes = [
         superpowers: ["Solar energy absorption", "Fire blasts", "Flight"],
         catchPhrase: "Feel the heat of the sun!",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/solar_flare1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/solar_flare2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/solar_flare3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/solar_flare1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/solar_flare2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/solar_flare3.jpg` }
         ]
     },
     {
@@ -31,9 +33,9 @@ const heroes = [
         superpowers: ["Powered armor", "Super strength", "Advanced weaponry"],
         catchPhrase: "No one breaks the guard!",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_guard1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_guard2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_guard3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_guard1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_guard2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_guard3.jpg` }
         ]
     },
     {
@@ -43,9 +45,9 @@ const heroes = [
         superpowers: ["Water manipulation", "Swordsmanship", "Enhanced agility"],
         catchPhrase: "The tide always wins.",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/aqua_blade1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/aqua_blade2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/aqua_blade3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/aqua_blade1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/aqua_blade2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/aqua_blade3.jpg` }
         ]
     },
     {
@@ -55,9 +57,9 @@ const heroes = [
         superpowers: ["Electric manipulation", "Claws", "Super speed"],
         catchPhrase: "Feel the thunder strike!",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/thunder_claw1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/thunder_claw2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/thunder_claw3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/thunder_claw1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/thunder_claw2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/thunder_claw3.jpg` }
         ]
     },
     {
@@ -67,9 +69,9 @@ const heroes = [
         superpowers: ["Enhanced senses", "Super strength", "Regeneration"],
         catchPhrase: "I hunt in the shadows.",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/night_wolf1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/night_wolf2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/night_wolf3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/night_wolf1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/night_wolf2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/night_wolf3.jpg` }
         ]
     },
     {
@@ -79,9 +81,9 @@ const heroes = [
         superpowers: ["Cryomancy", "Crystal creation", "Teleportation"],
         catchPhrase: "Freeze your fears.",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/crystal_mage1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/crystal_mage2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/crystal_mage3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/crystal_mage1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/crystal_mage2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/crystal_mage3.jpg` }
         ]
     },
     {
@@ -91,9 +93,9 @@ const heroes = [
         superpowers: ["Wind manipulation", "Flight", "Super speed"],
         catchPhrase: "Catch the wind!",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/wind_rider1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/wind_rider2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/wind_rider3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/wind_rider1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/wind_rider2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/wind_rider3.jpg` }
         ]
     },
     {
@@ -103,9 +105,9 @@ const heroes = [
         superpowers: ["Metal claws", "Hand-to-hand combat", "Enhanced durability"],
         catchPhrase: "Bite hard, fight harder.",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_fang1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_fang2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_fang3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_fang1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_fang2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_fang3.jpg` }
         ]
     },
     {
@@ -115,9 +117,9 @@ const heroes = [
         superpowers: ["Fire manipulation", "Regeneration", "Flight"],
         catchPhrase: "From ashes, I rise!",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/phoenix_flame1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/phoenix_flame2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/phoenix_flame3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/phoenix_flame1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/phoenix_flame2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/phoenix_flame3.jpg` }
         ]
     },
     {
@@ -127,9 +129,9 @@ const heroes = [
         superpowers: ["Powered armor", "AI enhanced reflexes", "Super strength"],
         catchPhrase: "Your protector in steel.",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/steel_sentinel1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/steel_sentinel2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/steel_sentinel3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/steel_sentinel1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/steel_sentinel2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/steel_sentinel3.jpg` }
         ]
     },
     {
@@ -139,9 +141,9 @@ const heroes = [
         superpowers: ["Shadow manipulation", "Illusions", "Invisibility"],
         catchPhrase: "The darkness hides all truths.",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/mystic_shade1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/mystic_shade2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/mystic_shade3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/mystic_shade1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/mystic_shade2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/mystic_shade3.jpg` }
         ]
     },
     {
@@ -151,9 +153,9 @@ const heroes = [
         superpowers: ["Ice manipulation", "Weather control", "Enhanced endurance"],
         catchPhrase: "Freeze the world!",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/blizzard1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/blizzard2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/blizzard3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/blizzard1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/blizzard2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/blizzard3.jpg` }
         ]
     },
     {
@@ -163,9 +165,9 @@ const heroes = [
         superpowers: ["Electricity generation", "Lightning speed", "Energy blasts"],
         catchPhrase: "Voltage overload!",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/volt1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/volt2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/volt3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/volt1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/volt2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/volt3.jpg` }
         ]
     },
     {
@@ -175,9 +177,9 @@ const heroes = [
         superpowers: ["Invulnerability", "Nanotech enhancement", "Super strength"],
         catchPhrase: "Nothing can bend me.",
         images: [
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_will1.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_will2.jpg` },
-            { url: `${process.env.BACKEND_ADDRESS}/uploads/iron_will3.jpg` }
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_will1.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_will2.jpg` },
+            { url: `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/images/iron_will3.jpg` }
         ]
     }
 ];
