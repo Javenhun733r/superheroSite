@@ -12,9 +12,9 @@ const PORT = process.env.PORT || 5231;
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use(cors());
 app.use(express.json());
-app.use(errorHandler);
-app.use('', superheroRoutes);
 
+app.use('', superheroRoutes);
+app.use(errorHandler);
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });

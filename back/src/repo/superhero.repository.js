@@ -11,16 +11,14 @@ class SuperheroRepository {
         })
             .then(toSuperheroOutputDtoArray)
             .catch(err => {
-                console.error(err);
-                throw new AppError('Failed to fetch superheroes');
+                throw new AppError('Failed to fetch superheroes', err);
             });
     }
 
     countAll() {
         return prisma.superhero.count()
             .catch(err => {
-                console.error(err);
-                throw new AppError('Failed to count superheroes');
+                throw new AppError('Failed to count superheroes', err);
             });
     }
 
@@ -34,8 +32,7 @@ class SuperheroRepository {
                 return toSuperheroOutputDto(hero);
             })
             .catch(err => {
-                console.error(err);
-                throw err instanceof AppError ? err : new AppError('Failed to fetch superhero');
+                throw err instanceof AppError ? err : new AppError('Failed to fetch superhero', err);
             });
     }
 
@@ -51,8 +48,7 @@ class SuperheroRepository {
         })
             .then(toSuperheroOutputDto)
             .catch(err => {
-                console.error(err);
-                throw new AppError('Failed to create superhero');
+                throw new AppError('Failed to create superhero', err);
             });
     }
 
@@ -70,8 +66,7 @@ class SuperheroRepository {
             }))
             .then(toSuperheroOutputDto)
             .catch(err => {
-                console.error(err);
-                throw new AppError(`Failed to update superhero with id: ${id}`);
+                throw new AppError(`Failed to update superhero with id: ${id}`, err);
             });
     }
 
@@ -79,8 +74,7 @@ class SuperheroRepository {
         return prisma.image.deleteMany({ where: { superheroId: id } })
             .then(() => prisma.superhero.delete({ where: { id } }))
             .catch(err => {
-                console.error(err);
-                throw new AppError(`Failed to delete superhero with id: ${id}`);
+                throw new AppError(`Failed to delete superhero with id: ${id}`, err);
             });
     }
 }

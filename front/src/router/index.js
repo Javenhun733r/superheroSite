@@ -7,10 +7,7 @@ const routes = [
     { path: '/', component: HomeView },
     { path: '/heroes/:id', component: HeroDetailView, props: true },
     { path: '/create', component: HeroFormView },
-    {
-        path: '/heroes/:id/edit',
-        component: HeroEditView
-    }
+    { path: '/heroes/:id/edit', component: HeroEditView }
 ];
 
 const router = createRouter({

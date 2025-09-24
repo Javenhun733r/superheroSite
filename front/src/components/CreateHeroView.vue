@@ -1,58 +1,8 @@
-<template>
-  <div class="form-container">
-    <router-link to="/">
-      <button class="btn back-btn">← Main Page</button>
-    </router-link>
-    <h2 class="form-title">Create New Superhero</h2>
-
-    <form @submit.prevent="onSubmit" class="superhero-form">
-      <div class="form-group">
-        <label for="nickname">Nickname:</label>
-        <input id="nickname" v-model="form.nickname" required />
-      </div>
-
-      <div class="form-group">
-        <label for="realName">Real Name:</label>
-        <input id="realName" v-model="form.realName" required />
-      </div>
-
-      <div class="form-group">
-        <label for="originDescription">Origin Description:</label>
-        <textarea id="originDescription" v-model="form.originDescription" required></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="superpowers">Superpowers (comma-separated):</label>
-        <input id="superpowers" v-model="form.superpowers" required />
-      </div>
-
-      <div class="form-group">
-        <label for="catchPhrase">Catch Phrase:</label>
-        <input id="catchPhrase" v-model="form.catchPhrase" required />
-      </div>
-
-      <div class="form-group">
-        <label>Upload Images:</label>
-        <input type="file" multiple @change="onFilesChange" class="file-input" />
-      </div>
-
-      <ul class="image-previews">
-        <li v-for="(file, index) in form.images" :key="file.tempId || index" class="preview-item">
-          <img :src="file.preview" class="preview-img" />
-          <button type="button" @click="removeFile(index)" class="remove-btn">&times;</button>
-        </li>
-      </ul>
-
-      <button type="submit" class="btn submit-btn">Create Hero</button>
-    </form>
-  </div>
-</template>
-
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { createHero } from '../api/superheroApi'
-import { toast } from '../main'
+import {ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {createHero} from '../api/superheroApi'
+import {toast} from '../main'
 
 const router = useRouter()
 
@@ -65,8 +15,10 @@ const form = ref({
   images: []
 })
 
-const onFilesChange = (event) => {
-  const selectedFiles = Array.from(event.target.files).map((file, index) => {
+const onFilesChange = (source) => {
+  const files = source.target ? source.target.files : source.files
+
+  const selectedFiles = Array.from(files).map((file, index) => {
     file.preview = URL.createObjectURL(file)
     file.tempId = Date.now() + '-' + index
     return file
@@ -77,7 +29,13 @@ const onFilesChange = (event) => {
 const removeFile = (index) => {
   form.value.images.splice(index, 1)
 }
-
+const onDragPrevent = (event) => {
+  event.preventDefault()
+}
+const onDragDrop = (event) => {
+  event.preventDefault()
+  onFilesChange(event.dataTransfer)
+}
 const onSubmit = async () => {
   try {
     const formData = new FormData()
@@ -97,50 +55,121 @@ const onSubmit = async () => {
   }
 }
 </script>
+<template>
+  <div class="form-container">
+    <router-link to="/">
+      <button class="btn back-btn">← Main Page</button>
+    </router-link>
+    <h2 class="form-title">Create New Superhero</h2>
+
+    <form @submit.prevent="onSubmit" class="superhero-form">
+      <div class="form-group">
+        <label for="nickname">Nickname:</label>
+        <input id="nickname" v-model="form.nickname" required/>
+      </div>
+
+      <div class="form-group">
+        <label for="realName">Real Name:</label>
+        <input id="realName" v-model="form.realName" required/>
+      </div>
+
+      <div class="form-group">
+        <label for="originDescription">Origin Description:</label>
+        <textarea id="originDescription" v-model="form.originDescription" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="superpowers">Superpowers (comma-separated):</label>
+        <input id="superpowers" v-model="form.superpowers" required/>
+      </div>
+
+      <div class="form-group">
+        <label for="catchPhrase">Catch Phrase:</label>
+        <input id="catchPhrase" v-model="form.catchPhrase" required/>
+      </div>
+
+      <div class="upload-container">
+        <label
+            for="file-upload"
+            class="upload-drop-zone"
+            @dragover.prevent="onDragPrevent"
+            @dragleave.prevent="onDragPrevent"
+            @drop.prevent="onDragDrop"
+        >
+          <i class="fas fa-cloud-upload-alt upload-icon"></i>
+          <span class="upload-text">
+            <span v-if="form.images.length === 0">Click here to upload, or drag & drop images</span>
+            <span v-else>{{ form.images.length }} files selected. Click to add more.</span>
+          </span>
+          <input id="file-upload" type="file" multiple @change="onFilesChange" class="hidden-file-input"/>
+        </label>
+      </div>
+      <ul class="image-previews">
+        <li v-for="(file, index) in form.images" :key="file.tempId || index" class="preview-item">
+          <img :src="file.preview" class="preview-img" alt=""/>
+          <button type="button" @click="removeFile(index)" class="remove-btn">&times;</button>
+        </li>
+      </ul>
+
+      <button type="submit" class="btn submit-btn">Create Hero</button>
+    </form>
+  </div>
+</template>
+
 
 <style scoped>
+
 .form-container {
-  max-width: 650px;
+  max-width: 700px;
   margin: 2rem auto;
-  padding: 2.5rem;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* М'яка, сучасна тінь */
+  padding: 3.5rem;
+  background-color: #2c2c44;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 50px; /* Закруглені кнопки */
+  border-radius: 50px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+
 .back-btn {
-  background-color: #ecf0f1;
-  color: #333;
+  background-color: transparent;
+  color: #c8c8d8;
+  border: 2px solid #c8c8d8;
+  padding: 0.5rem 1rem;
 }
 
 .back-btn:hover {
-  background-color: #bdc3c7;
+  background-color: #c8c8d8;
+  color: #1a1a2e;
+  transform: scale(1.02);
 }
 
+
 .form-title {
+  color: #ffffff;
   font-family: 'Montserrat', sans-serif;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #333;
   text-align: center;
   margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
+
 
 .superhero-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
+
 
 .form-group {
   display: flex;
@@ -149,15 +178,18 @@ const onSubmit = async () => {
 
 label {
   font-weight: 600;
-  color: #555;
+  color: #b0b0c0;
   margin-bottom: 0.5rem;
 }
 
+
 input,
 textarea {
-  padding: 0.8rem 1rem;
+  padding: 1rem;
   font-size: 1rem;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #4a4a66;
+  background-color: #1a1a2e;
+  color: #e0e0e0;
   border-radius: 8px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -165,8 +197,8 @@ textarea {
 input:focus,
 textarea:focus {
   outline: none;
-  border-color: #3498db; /* Синій фокус */
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.3);
 }
 
 textarea {
@@ -174,9 +206,66 @@ textarea {
   resize: vertical;
 }
 
-.file-input {
-  cursor: pointer;
+.upload-container {
+  margin-top: 1rem;
 }
+
+.upload-drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  padding: 1rem;
+  border: 3px dashed #4a4a66;
+  border-radius: 12px;
+  background-color: #1a1a2e;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-drop-zone:hover {
+  border-color: #2ecc71;
+  background-color: #22223a;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  color: #c8c8d8;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.upload-drop-zone:hover .upload-icon {
+  color: #2ecc71;
+}
+
+.upload-text {
+  color: #b0b0c0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.submit-btn {
+  background-color: #2ecc71;
+  color: #ffffff;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.submit-btn:hover {
+  background-color: #27ae60;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+
 
 .image-previews {
   list-style: none;
@@ -191,12 +280,12 @@ textarea {
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .preview-img {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   display: block;
 }
@@ -222,17 +311,5 @@ textarea {
 
 .preview-item:hover .remove-btn {
   opacity: 1;
-}
-
-.submit-btn {
-  background-color: #2ecc71;
-  color: white;
-  margin-top: 1rem;
-  align-self: flex-start;
-}
-
-.submit-btn:hover {
-  background-color: #27ae60;
-  transform: translateY(-2px);
 }
 </style>

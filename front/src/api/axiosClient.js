@@ -1,13 +1,11 @@
-// axiosClient.js
 import axios from 'axios';
-import { toast } from 'vue3-toastify'; // прямий імпорт toast
+import { toast } from 'vue3-toastify';
 
 const axiosClient = axios.create({
     baseURL: 'http://localhost:5231',
     timeout: 10000,
 });
 
-// Глобальна обробка помилок
 axiosClient.interceptors.response.use(
     response => response,
     error => {

@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { ValidationError } = require('../errors/CustomErrors');
 
 const superheroSchema = Joi.object({
     nickname: Joi.string().required(),
@@ -13,9 +14,10 @@ const superheroSchema = Joi.object({
 });
 
 module.exports = (req, res, next) => {
-    const { error } = superheroSchema.validate(req.body);
+    const { error } = superheroSchema.validate(req.body, { abortEarly: false });
     if (error) {
-        return res.status(400).json({ error: error.details[0].message });
+        const messages = error.details.map(d => d.message);
+        return next(new ValidationError(messages.join(', '), error));
     }
     next();
 };

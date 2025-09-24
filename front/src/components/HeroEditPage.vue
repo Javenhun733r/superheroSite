@@ -1,57 +1,3 @@
-<template>
-  <div v-if="hero" class="form-container">
-    <div class="header-actions">
-      <router-link to="/"><button class="btn back-btn">← Main Page</button></router-link>
-    </div>
-
-    <h2 class="form-title">Edit Hero</h2>
-    <form @submit.prevent="onSubmit" class="superhero-form">
-      <div class="form-group">
-        <label for="nickname">Nickname:</label>
-        <input id="nickname" v-model="localForm.nickname" required />
-      </div>
-
-      <div class="form-group">
-        <label for="realName">Real Name:</label>
-        <input id="realName" v-model="localForm.realName" required />
-      </div>
-
-      <div class="form-group">
-        <label for="originDescription">Origin Description:</label>
-        <textarea id="originDescription" v-model="localForm.originDescription" required></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="superpowers">Superpowers (comma-separated):</label>
-        <input id="superpowers" v-model="localForm.superpowers" required />
-      </div>
-
-      <div class="form-group">
-        <label for="catchPhrase">Catch Phrase:</label>
-        <input id="catchPhrase" v-model="localForm.catchPhrase" required />
-      </div>
-
-      <div class="form-group">
-        <label>Upload New Images:</label>
-        <input type="file" multiple @change="onFilesChange" class="file-input" />
-      </div>
-
-      <ul class="image-previews">
-        <li v-for="(file, index) in localForm.images" :key="file.id || file.tempId || index" class="preview-item">
-          <img :src="file.preview || file.url" class="preview-img" />
-          <button type="button" @click="removeImage(index)" class="remove-btn">
-            &times;
-          </button>
-        </li>
-      </ul>
-
-      <div class="button-group">
-        <button type="submit" class="btn submit-btn">Save</button>
-        <button type="button" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
-      </div>
-    </form>
-  </div>
-</template>
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -85,16 +31,20 @@ const loadHero = async () => {
   }
 }
 
-const onFilesChange = (event) => {
-  const files = Array.from(event.target.files)
-  const newFiles = files.map((file, index) => {
+const onFilesChange = (source) => {
+  const files = source.target ? source.target.files : source.files
+
+  const newFiles = Array.from(files).map((file, index) => {
     file.preview = URL.createObjectURL(file)
     file.tempId = Date.now() + '-' + index
     return file
   })
   localForm.value.images = [...localForm.value.images, ...newFiles]
 }
-
+const onDragDrop = (event) => {
+  event.preventDefault()
+  onFilesChange(event.dataTransfer)
+}
 const removeImage = (index) => {
   localForm.value.images.splice(index, 1)
 }
@@ -119,7 +69,7 @@ const onSubmit = async () => {
     setTimeout(() => {
       router.push(`/heroes/${route.params.id}`)
     }, 1500)
-    
+
   } catch (err) {
     console.error(err)
     toast.error('Failed to update hero.')
@@ -132,19 +82,90 @@ const cancelEdit = () => {
 
 onMounted(loadHero)
 </script>
+<template>
+  <div v-if="hero" class="form-container">
+    <div class="header-actions">
+      <router-link to="/"><button class="btn back-btn">← Main Page</button></router-link>
+    </div>
+
+    <h2 class="form-title">Edit Hero</h2>
+    <form @submit.prevent="onSubmit" class="superhero-form">
+
+      <div class="form-group">
+        <label for="nickname">Nickname:</label>
+        <input id="nickname" v-model="localForm.nickname" required />
+      </div>
+
+      <div class="form-group">
+        <label for="realName">Real Name:</label>
+        <input id="realName" v-model="localForm.realName" required />
+      </div>
+
+      <div class="form-group">
+        <label for="originDescription">Origin Description:</label>
+        <textarea id="originDescription" v-model="localForm.originDescription" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="superpowers">Superpowers (comma-separated):</label>
+        <input id="superpowers" v-model="localForm.superpowers" required />
+      </div>
+
+      <div class="form-group">
+        <label for="catchPhrase">Catch Phrase:</label>
+        <input id="catchPhrase" v-model="localForm.catchPhrase" required />
+      </div>
+
+      <div class="upload-container">
+        <label
+            for="file-upload"
+            class="upload-drop-zone"
+            @dragover.prevent
+            @dragleave.prevent
+            @drop.prevent="onDragDrop"
+        >
+          <i class="fas fa-cloud-upload-alt upload-icon"></i>
+          <span class="upload-text">
+            <span v-if="localForm.images.length === 0">Click here to upload, or drag & drop images</span>
+            <span v-else>{{ localForm.images.length }} files in gallery. Drag & drop new images or click to add.</span>
+          </span>
+          <input id="file-upload" type="file" multiple @change="onFilesChange" class="hidden-file-input" />
+        </label>
+      </div>
+
+      <ul class="image-previews">
+        <li v-for="(file, index) in localForm.images" :key="file.id || file.tempId || index" class="preview-item">
+          <img :src="file.preview || file.url" class="preview-img" alt="Hero image preview"/>
+          <button type="button" @click="removeImage(index)" class="remove-btn">
+            &times;
+          </button>
+        </li>
+      </ul>
+
+      <div class="button-group">
+        <button type="button" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
+        <button type="submit" class="btn submit-btn">Save</button>
+      </div>
+    </form>
+  </div>
+</template>
 
 <style scoped>
+
 .form-container {
-  max-width: 650px;
+  max-width: 700px;
   margin: 2rem auto;
-  padding: 2.5rem;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  padding: 3.5rem;
+  background-color: #2c2c44;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  position: relative;
 }
 
 .header-actions {
-  margin-bottom: 1.5rem;
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
 }
 
 .btn {
@@ -154,32 +175,41 @@ onMounted(loadHero)
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+
 .back-btn {
-  background-color: #ecf0f1;
-  color: #333;
+  background-color: transparent;
+  color: #c8c8d8;
+  border: 2px solid #c8c8d8;
+  padding: 0.5rem 1rem;
 }
 
 .back-btn:hover {
-  background-color: #bdc3c7;
+  background-color: #c8c8d8;
+  color: #1a1a2e;
+  transform: scale(1.02);
 }
 
+
 .form-title {
+  color: #ffffff;
   font-family: 'Montserrat', sans-serif;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #333;
   text-align: center;
   margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
+
 
 .superhero-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
+
 
 .form-group {
   display: flex;
@@ -188,15 +218,18 @@ onMounted(loadHero)
 
 label {
   font-weight: 600;
-  color: #555;
+  color: #b0b0c0;
   margin-bottom: 0.5rem;
 }
 
+
 input,
 textarea {
-  padding: 0.8rem 1rem;
+  padding: 1rem;
   font-size: 1rem;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #4a4a66;
+  background-color: #1a1a2e;
+  color: #e0e0e0;
   border-radius: 8px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -204,8 +237,8 @@ textarea {
 input:focus,
 textarea:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.3);
 }
 
 textarea {
@@ -213,8 +246,48 @@ textarea {
   resize: vertical;
 }
 
-.file-input {
+.upload-container {
+  margin-top: 1rem;
+}
+
+.upload-drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  padding: 1rem;
+  border: 3px dashed #4a4a66;
+  border-radius: 12px;
+  background-color: #1a1a2e;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-drop-zone:hover {
+  border-color: #2ecc71;
+  background-color: #22223a;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  color: #c8c8d8;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.upload-drop-zone:hover .upload-icon {
+  color: #2ecc71;
+}
+
+.upload-text {
+  color: #b0b0c0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.hidden-file-input {
+  display: none;
 }
 
 .image-previews {
@@ -230,12 +303,12 @@ textarea {
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .preview-img {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   display: block;
 }
@@ -251,7 +324,6 @@ textarea {
   width: 25px;
   height: 25px;
   font-size: 1.2rem;
-  line-height: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -264,29 +336,39 @@ textarea {
   opacity: 1;
 }
 
+
 .button-group {
   display: flex;
-  justify-content: flex-end; /* Вирівняти кнопки праворуч */
+  justify-content: flex-end;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .submit-btn {
   background-color: #2ecc71;
-  color: white;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .submit-btn:hover {
   background-color: #27ae60;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
 }
 
 .cancel-btn {
-  background-color: #bdc3c7;
-  color: #333;
+  background-color: #5b5b75;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
 }
 
 .cancel-btn:hover {
-  background-color: #95a5a6;
+  background-color: #4a4a66;
+  transform: translateY(-1px);
 }
 </style>

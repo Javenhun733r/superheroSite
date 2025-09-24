@@ -1,11 +1,14 @@
 class AppError extends Error {
-    constructor(message, statusCode = 500) {
+    constructor(message, statusCode = 500, originalError = null) {
         super(message);
         this.statusCode = statusCode;
         this.isOperational = true;
+        this.originalError = originalError;
+
         Error.captureStackTrace(this, this.constructor);
     }
 }
+
 
 class NotFoundError extends AppError {
     constructor(message) {
@@ -19,4 +22,10 @@ class BadRequestError extends AppError {
     }
 }
 
-module.exports = { AppError, NotFoundError, BadRequestError };
+class ValidationError extends AppError {
+    constructor(message, originalError = null) {
+        super(message, 400, originalError);
+        this.name = 'ValidationError';
+    }
+}
+module.exports = { AppError, NotFoundError, BadRequestError, ValidationError };
