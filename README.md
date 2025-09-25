@@ -62,11 +62,11 @@ node prisma/seed.js
 
 5.**Run the app:**
 
-# Backend
+Backend
 
 npm run dev
 
-# Frontend (in separate terminal)
+Frontend (in separate terminal)
 
 cd frontend
 
