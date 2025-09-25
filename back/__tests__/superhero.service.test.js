@@ -1,6 +1,6 @@
-import { SuperheroInputDto } from '../src/dto/superheroInput.dto.js';
+import {toSuperheroInputDto} from '../src/mappers/superheroInput.mapper.js';
 import SuperheroService from '../src/services/superheroService.js';
-
+import { jest } from '@jest/globals';
 const mockRepository = {
     findAll: jest.fn(),
     countAll: jest.fn(),
@@ -35,8 +35,16 @@ describe('SuperheroService', () => {
     });
 
     describe('createSuperhero', () => {
-        it('creates a superhero if SuperheroInputDto is provided', async () => {
-            const dto = new SuperheroInputDto('Batman', 'DC');
+        it('creates a superhero if DTO is provided', async () => {
+            const dto = toSuperheroInputDto({
+                nickname: 'Batman',
+                realName: 'Bruce Wayne',
+                originDescription: 'Rich guy in a bat suit',
+                superpowers: ['Martial arts', 'Detective skills'],
+                catchPhrase: "I'm Batman",
+                imageUrls: ['http://batman.jpg']
+            });
+
             mockRepository.create.mockResolvedValue({ id: 1, ...dto });
 
             const result = await service.createSuperhero(dto);
@@ -63,8 +71,16 @@ describe('SuperheroService', () => {
     });
 
     describe('updateSuperhero', () => {
-        it('updates a superhero if SuperheroInputDto is provided', async () => {
-            const dto = new SuperheroInputDto('Ironman', 'Marvel');
+        it('updates a superhero if DTO is provided', async () => {
+            const dto = toSuperheroInputDto({
+                nickname: 'Ironman',
+                realName: 'Tony Stark',
+                originDescription: 'Genius billionaire playboy philanthropist',
+                superpowers: ['Powered armor suit', 'Genius intellect'],
+                catchPhrase: "I am Iron Man",
+                imageUrls: ['http://ironman.jpg']
+            });
+
             mockRepository.update.mockResolvedValue({ id: 1, ...dto });
 
             const result = await service.updateSuperhero(1, dto);

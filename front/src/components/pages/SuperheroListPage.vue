@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getHeroes } from '../api/superheroApi'
-import SuperheroCard from '../components/SuperheroCard.vue'
-import Pagination from './SuperheroPagination.vue'
+import { getHeroes } from '@/api/superheroApi.js'
+import SuperheroCard from '../cards/SuperheroCard.vue'
+import Pagination from '../pagination/SuperheroPagination.vue'
 
 const heroes = ref([])
 const page = ref(1)

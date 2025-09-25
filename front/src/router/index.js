@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../components/SuperheroList.vue';
-import HeroDetailView from '../components/SuperheroDetails.vue';
-import HeroFormView from '../components/CreateHeroView.vue'
-import HeroEditView from '../components/HeroEditPage.vue'
+import HomeView from '../components/pages/SuperheroListPage.vue';
+import HeroDetailView from '../components/pages/SuperheroDetailsPage.vue';
+import HeroFormView from '../components/pages/CreateHeroPage.vue'
+import HeroEditView from '../components/pages/HeroEditPage.vue'
 const routes = [
     { path: '/', component: HomeView },
     { path: '/heroes/:id', component: HeroDetailView, props: true },

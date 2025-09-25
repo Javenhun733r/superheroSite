@@ -1,8 +1,8 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {deleteHero, getHeroById} from '../api/superheroApi'
-import {toast} from '../main'
+import {deleteHero, getHeroById} from '@/api/superheroApi.js'
+import notyf from "@/plugins/notyf.js";
 
 const route = useRoute()
 const router = useRouter()
@@ -17,7 +17,7 @@ const loadHero = async () => {
     hero.value = await getHeroById(route.params.id)
   } catch (error) {
     console.error(error)
-    toast.error(error.response?.data?.error || 'Failed to load hero')
+    notyf.error(error.response?.data?.error || 'Failed to load hero')
   } finally {
     loading.value = false
   }
@@ -47,14 +47,14 @@ const handleDelete = async () => {
 
   try {
     await deleteHero(route.params.id)
-    toast.success('Hero deleted successfully')
+    notyf.success('Hero deleted successfully')
 
     setTimeout(() => {
       router.push('/')
     }, 1500)
   } catch (error) {
     console.error(error)
-    toast.error(error.response?.data?.error || 'Failed to delete hero')
+    notyf.error(error.response?.data?.error || 'Failed to delete hero')
   }
 }
 

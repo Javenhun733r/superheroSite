@@ -1,14 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { getHeroById, updateHero } from '../api/superheroApi'
-import { toast } from '../main'
+import {ref} from 'vue'
+import {createHero} from '@/api/superheroApi.js'
+import notyf from "@/plugins/notyf.js";
+import router from "@/router/index.js";
 
-const route = useRoute()
-const router = useRouter()
-const hero = ref(null)
-
-const localForm = ref({
+const form = ref({
   nickname: '',
   realName: '',
   originDescription: '',
@@ -17,138 +13,109 @@ const localForm = ref({
   images: []
 })
 
-const loadHero = async () => {
-  const data = await getHeroById(route.params.id)
-  hero.value = data
-
-  localForm.value = {
-    nickname: data.nickname,
-    realName: data.realName,
-    originDescription: data.originDescription,
-    superpowers: data.superpowers.join(', '),
-    catchPhrase: data.catchPhrase,
-    images: data.images.map(img => ({ ...img, preview: img.url }))
-  }
-}
-
 const onFilesChange = (source) => {
   const files = source.target ? source.target.files : source.files
 
-  const newFiles = Array.from(files).map((file, index) => {
+  const selectedFiles = Array.from(files).map((file, index) => {
     file.preview = URL.createObjectURL(file)
     file.tempId = Date.now() + '-' + index
     return file
   })
-  localForm.value.images = [...localForm.value.images, ...newFiles]
+  form.value.images = [...form.value.images, ...selectedFiles]
+}
+
+const removeFile = (index) => {
+  form.value.images.splice(index, 1)
+}
+const onDragPrevent = (event) => {
+  event.preventDefault()
 }
 const onDragDrop = (event) => {
   event.preventDefault()
   onFilesChange(event.dataTransfer)
 }
-const removeImage = (index) => {
-  localForm.value.images.splice(index, 1)
-}
-
 const onSubmit = async () => {
   try {
-    const oldImages = localForm.value.images.filter(img => img.id).map(img => img.url)
-    const newFiles = localForm.value.images.filter(img => !img.id)
-
     const formData = new FormData()
-    formData.append('nickname', localForm.value.nickname)
-    formData.append('realName', localForm.value.realName)
-    formData.append('originDescription', localForm.value.originDescription)
-    formData.append('superpowers', localForm.value.superpowers)
-    formData.append('catchPhrase', localForm.value.catchPhrase)
-    formData.append('oldImages', JSON.stringify(oldImages))
+    formData.append('nickname', form.value.nickname)
+    formData.append('realName', form.value.realName)
+    formData.append('originDescription', form.value.originDescription)
+    formData.append('superpowers', form.value.superpowers.split(',').map(s => s.trim()).join(','))
+    formData.append('catchPhrase', form.value.catchPhrase)
+    form.value.images.forEach(file => formData.append('images', file))
 
-    newFiles.forEach(file => formData.append('images', file))
-
-    await updateHero(route.params.id, formData)
-    toast.success('Hero updated!')
+    await createHero(formData)
+    notyf.success('Hero created successfully!')
     setTimeout(() => {
-      router.push(`/heroes/${route.params.id}`)
+      router.push(`/`)
     }, 1500)
-
-  } catch (err) {
-    console.error(err)
-    toast.error('Failed to update hero.')
+  } catch (error) {
+    console.error(error)
+    notyf.error('Failed to create hero.')
   }
 }
-
-const cancelEdit = () => {
-  router.back()
-}
-
-onMounted(loadHero)
 </script>
 <template>
-  <div v-if="hero" class="form-container">
-    <div class="header-actions">
-      <router-link to="/"><button class="btn back-btn">← Main Page</button></router-link>
-    </div>
+  <div class="form-container">
+    <router-link to="/">
+      <button class="btn back-btn">← Main Page</button>
+    </router-link>
+    <h2 class="form-title">Create New Superhero</h2>
 
-    <h2 class="form-title">Edit Hero</h2>
     <form @submit.prevent="onSubmit" class="superhero-form">
-
       <div class="form-group">
         <label for="nickname">Nickname:</label>
-        <input id="nickname" v-model="localForm.nickname" required />
+        <input id="nickname" v-model="form.nickname" required/>
       </div>
 
       <div class="form-group">
         <label for="realName">Real Name:</label>
-        <input id="realName" v-model="localForm.realName" required />
+        <input id="realName" v-model="form.realName" required/>
       </div>
 
       <div class="form-group">
         <label for="originDescription">Origin Description:</label>
-        <textarea id="originDescription" v-model="localForm.originDescription" required></textarea>
+        <textarea id="originDescription" v-model="form.originDescription" required></textarea>
       </div>
 
       <div class="form-group">
         <label for="superpowers">Superpowers (comma-separated):</label>
-        <input id="superpowers" v-model="localForm.superpowers" required />
+        <input id="superpowers" v-model="form.superpowers" required/>
       </div>
 
       <div class="form-group">
         <label for="catchPhrase">Catch Phrase:</label>
-        <input id="catchPhrase" v-model="localForm.catchPhrase" required />
+        <input id="catchPhrase" v-model="form.catchPhrase" required/>
       </div>
 
       <div class="upload-container">
         <label
             for="file-upload"
             class="upload-drop-zone"
-            @dragover.prevent
-            @dragleave.prevent
+            @dragover.prevent="onDragPrevent"
+            @dragleave.prevent="onDragPrevent"
             @drop.prevent="onDragDrop"
         >
           <i class="fas fa-cloud-upload-alt upload-icon"></i>
           <span class="upload-text">
-            <span v-if="localForm.images.length === 0">Click here to upload, or drag & drop images</span>
-            <span v-else>{{ localForm.images.length }} files in gallery. Drag & drop new images or click to add.</span>
+            <span v-if="form.images.length === 0">Click here to upload, or drag & drop images</span>
+            <span v-else>{{ form.images.length }} files selected. Click to add more.</span>
           </span>
-          <input id="file-upload" type="file" multiple @change="onFilesChange" class="hidden-file-input" />
+          <input id="file-upload" type="file" multiple @change="onFilesChange" class="hidden-file-input"/>
         </label>
       </div>
-
       <ul class="image-previews">
-        <li v-for="(file, index) in localForm.images" :key="file.id || file.tempId || index" class="preview-item">
-          <img :src="file.preview || file.url" class="preview-img" alt="Hero image preview"/>
-          <button type="button" @click="removeImage(index)" class="remove-btn">
-            &times;
-          </button>
+        <li v-for="(file, index) in form.images" :key="file.tempId || index" class="preview-item">
+          <img :src="file.preview" class="preview-img" alt=""/>
+          <button type="button" @click="removeFile(index)" class="remove-btn">&times;</button>
         </li>
       </ul>
 
-      <div class="button-group">
-        <button type="button" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
-        <button type="submit" class="btn submit-btn">Save</button>
-      </div>
+      <button type="submit" class="btn submit-btn">Create Hero</button>
     </form>
   </div>
 </template>
+
 
 <style scoped>
 
@@ -159,13 +126,6 @@ onMounted(loadHero)
   background-color: #2c2c44;
   border-radius: 16px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-  position: relative;
-}
-
-.header-actions {
-  position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
 }
 
 .btn {
@@ -290,6 +250,23 @@ textarea {
   display: none;
 }
 
+.submit-btn {
+  background-color: #2ecc71;
+  color: #ffffff;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.submit-btn:hover {
+  background-color: #27ae60;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+
+
 .image-previews {
   list-style: none;
   display: flex;
@@ -334,41 +311,5 @@ textarea {
 
 .preview-item:hover .remove-btn {
   opacity: 1;
-}
-
-
-.button-group {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.submit-btn {
-  background-color: #2ecc71;
-  color: #ffffff;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.submit-btn:hover {
-  background-color: #27ae60;
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-}
-
-.cancel-btn {
-  background-color: #5b5b75;
-  color: #ffffff;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  font-size: 1.2rem;
-}
-
-.cancel-btn:hover {
-  background-color: #4a4a66;
-  transform: translateY(-1px);
 }
 </style>

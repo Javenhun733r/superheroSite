@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { toast } from 'vue3-toastify';
+import notyf from "@/plugins/notyf.js";
 
 const axiosClient = axios.create({
-    baseURL: 'http://localhost:5231',
+    baseURL: import.meta.env.VITE_BACKEND_URL,
     timeout: 10000,
 });
 
@@ -10,7 +10,7 @@ axiosClient.interceptors.response.use(
     response => response,
     error => {
         const message = error.response?.data?.error || error.message || 'Unknown error';
-        toast.error(message, { position: 'top-right', autoClose: 5000 });
+        notyf.error(message);
         return Promise.reject(error);
     }
 );

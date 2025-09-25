@@ -1,22 +1,32 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import {PutObjectCommand} from "@aws-sdk/client-s3";
 import s3 from '../config/s3.js';
 import path from 'path';
 
-async function uploadToS3(file) {
-    const ext = path.extname(file.originalname);
-    const key = `images/${Date.now()}-${file.fieldname}${ext}`;
+class S3Service {
+    constructor(bucketName = process.env.S3_BUCKET_NAME, region = process.env.AWS_REGION) {
+        this.bucketName = bucketName;
+        this.region = region;
+    }
 
-    const command = new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: key,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-    });
+    upload = async (file) => {
+        if (!file || !file.buffer || !file.originalname) {
+            throw new Error('Invalid file');
+        }
 
-    await s3.send(command);
+        const ext = path.extname(file.originalname);
+        const key = `images/${Date.now()}-${file.fieldname}${ext}`;
 
-    const publicUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
-    return publicUrl;
+        const command = new PutObjectCommand({
+            Bucket: this.bucketName,
+            Key: key,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+        });
+
+        await s3.send(command);
+
+        return `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${key}`;
+    }
 }
 
-export { uploadToS3 };
+export default S3Service;
