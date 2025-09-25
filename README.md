@@ -9,7 +9,7 @@ A web application to manage superheroes, allowing users to create, update, delet
 - CRUD operations for superheroes
 - Assign and remove multiple images
 - List superheroes with pagination (5 per page)
-- View detailed information including all images
+- View detailed information, including all images
 - Image storage using AWS S3
 - Basic unit tests for backend service logic
 
@@ -28,28 +28,39 @@ A web application to manage superheroes, allowing users to create, update, delet
 ## Getting Started
 
 1. **Clone the repository:**
+
 git clone https://github.com/Javenhun733r/superheroSite.git
 cd superheroSite
 
 2.**Install dependencies:**
+
 npm install
 
 3.**Configure environment variables:**
+
 Create a .env file based on .env.example:
 
 On Backend:
+
 DATABASE_URL="your_database_url" 
+
 AWS_ACCESS_KEY_ID="your_access_key"
+
 AWS_SECRET_ACCESS_KEY="your_secret_key"
+
 AWS_REGION="your_region"
+
 S3_BUCKET_NAME="your_bucket_name"
 
 
 On Frontend:
+
 VITE_BACKEND_URL="http://localhost:5231"
 
 4.**Generate Prisma client and seed database (optional):**
+
 npx prisma generate
+
 node prisma/seed.js
 
 5.**Run the app:**
@@ -57,7 +68,7 @@ npm run dev
 
 Backend runs on the port defined in .env (default: 5231)
 
-Frontend runs on default Vite port (5173)
+Frontend runs on the default Vite port (5173)
 
 ---
 
@@ -70,17 +81,17 @@ npm run test
 
 ---
 
-##Notes / Assumptions
+## Notes / Assumptions
 
---AWS credentials should point to a test IAM user with limited permissions.
+-AWS credentials should point to a test IAM user with limited permissions.
 
---Superpowers are stored as an array of strings.
+-Superpowers are stored as an array of strings.
 
---The project is configured to run locally for testing and development.
+-The project is configured to run locally for testing and development.
 
 
 ---
 
-##Author
+## Author
 
 Babiuk Andrii
