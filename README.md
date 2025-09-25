@@ -27,16 +27,18 @@ A web application to manage superheroes, allowing users to create, update, delet
 
 ## Getting Started
 
-1. **Clone the repository:**
+1. **Clone the repository:** 
 
 git clone https://github.com/Javenhun733r/superheroSite.git
+
 cd superheroSite
 
-2.**Install dependencies:**
+2. **Install dependencies:**
 
 npm install
 
-3.**Configure environment variables:**
+
+3. **Configure environment variables:**
 
 Create a .env file based on .env.example:
 
@@ -52,18 +54,18 @@ AWS_REGION="your_region"
 
 S3_BUCKET_NAME="your_bucket_name"
 
-
 On Frontend:
 
 VITE_BACKEND_URL="http://localhost:5231"
 
-4.**Generate Prisma client and seed database (optional):**
+4. **Generate Prisma client and seed database (optional):**
 
 npx prisma generate
 
 node prisma/seed.js
 
 5.**Run the app:**
+
 npm run dev
 
 Backend runs on the port defined in .env (default: 5231)
