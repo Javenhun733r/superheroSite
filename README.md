@@ -46,7 +46,7 @@ On Backend:
 
 DATABASE_URL="your_database_url" 
 
-AWS_REGION="your_region"
+AWS_REGION=""
 
 S3_BUCKET_NAME="your_bucket_name"
 
@@ -62,11 +62,11 @@ node prisma/seed.js
 
 5.**Run the app:**
 
-Backend
+Backend:
 
 npm run dev
 
-Frontend (in separate terminal)
+Frontend (in separate terminal):
 
 cd frontend
 
@@ -96,6 +96,8 @@ npm run test
 -The project is configured to run locally for testing and development.
 
 -Image URLs are stored in S3 and deleted from S3 when a superhero is deleted.
+
+- AWS S3 keys are encrypted and stored in a JSON file to prevent exposure; this is done because bots on GitHub can scan repositories for plain keys. This approach is only for the test project and **should not** be used in production.
 
 ---
 
