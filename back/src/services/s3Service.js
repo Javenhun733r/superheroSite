@@ -1,4 +1,4 @@
-import {PutObjectCommand} from "@aws-sdk/client-s3";
+import {DeleteObjectCommand, PutObjectCommand} from "@aws-sdk/client-s3";
 import s3 from '../config/s3.js';
 import path from 'path';
 
@@ -26,6 +26,26 @@ class S3Service {
         await s3.send(command);
 
         return `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${key}`;
+    }
+    getKeyFromUrl = (url) => {
+        try {
+            const urlObj = new URL(url);
+            const parts = urlObj.pathname.split('/');
+            return parts.slice(1).join('/');
+        } catch (err) {
+            throw new Error('Invalid S3 URL');
+        }
+    }
+
+    delete = async (url) => {
+        const key = this.getKeyFromUrl(url);
+        const command = new DeleteObjectCommand({
+            Bucket: this.bucketName,
+            Key: key
+        });
+
+        await s3.send(command);
+        return true;
     }
 }
 
