@@ -29,7 +29,7 @@ A web application to manage superheroes, allowing users to create, update, delet
 
 1. **Clone the repository:** 
 
-git clone https://github.com/Javenhun733r/superheroSite.git
+git clone https://github.com/Javenhun733r/superheroSite
 
 cd superheroSite
 
@@ -44,11 +44,11 @@ Create a .env file based on .env.example:
 
 On Backend:
 
-DATABASE_URL="your_database_url" 
+DATABASE_URL="postgresql://username:password@localhost:5432/dbname" 
 
-AWS_REGION=""
+AWS_REGION="eu-central-1"
 
-S3_BUCKET_NAME="your_bucket_name"
+S3_BUCKET_NAME="superhero-storage"
 
 On Frontend:
 
