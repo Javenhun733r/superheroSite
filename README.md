@@ -46,10 +46,6 @@ On Backend:
 
 DATABASE_URL="your_database_url" 
 
-AWS_ACCESS_KEY_ID="your_access_key"
-
-AWS_SECRET_ACCESS_KEY="your_secret_key"
-
 AWS_REGION="your_region"
 
 S3_BUCKET_NAME="your_bucket_name"
@@ -66,7 +62,16 @@ node prisma/seed.js
 
 5.**Run the app:**
 
+# Backend
+
 npm run dev
+
+# Frontend (in separate terminal)
+
+cd frontend
+
+npm run dev
+
 
 Backend runs on the port defined in .env (default: 5231)
 
@@ -85,12 +90,12 @@ npm run test
 
 ## Notes / Assumptions
 
--AWS credentials should point to a test IAM user with limited permissions.
 
 -Superpowers are stored as an array of strings.
 
 -The project is configured to run locally for testing and development.
 
+-Image URLs are stored in S3 and deleted from S3 when a superhero is deleted.
 
 ---
 
